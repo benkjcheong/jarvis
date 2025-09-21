@@ -18,12 +18,12 @@ def run_integration_test():
     
     try:
         from tests.test_system import test_screenshot_capture, test_element_detection
-        from src.ai.language import PromptParser
+        from src.ai.gemma import GemmaWorkflowGenerator
         
-        # Test prompt parsing
-        parser = PromptParser()
-        result = parser.parse("Play cello music on Spotify")
-        print(f"Parsed prompt: {result}")
+        # Test workflow generation
+        generator = GemmaWorkflowGenerator()
+        workflow = generator.generate_workflow("Play cello music on Spotify")
+        print(f"Generated workflow: {len(workflow)} steps")
         
         # Test screenshot and element detection
         test_screenshot_capture()

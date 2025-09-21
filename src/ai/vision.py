@@ -58,8 +58,25 @@ class VisualProcessor:
     
     def _extract_text_regions(self, image: np.ndarray) -> List[Dict]:
         """Use OCR to find text regions"""
-        # Placeholder - would use Tesseract/EasyOCR
-        return []
+        import pytesseract
+        
+        # Get text data with bounding boxes
+        data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
+        
+        text_regions = []
+        for i in range(len(data['text'])):
+            if int(data['conf'][i]) > 30:  # Confidence threshold
+                text = data['text'][i].strip()
+                if text:
+                    x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
+                    text_regions.append({
+                        'bounds': (x, y, w, h),
+                        'type': 'text',
+                        'text': text,
+                        'confidence': data['conf'][i] / 100.0
+                    })
+        
+        return text_regions
     
     def _detect_clickable_elements(self, image: np.ndarray) -> List[Dict]:
         """Detect buttons, links, and other clickable elements"""

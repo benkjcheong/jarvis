@@ -8,3 +8,4 @@ pytesseract>=0.3.8
 pyautogui>=0.9.53
 pytest>=6.2.0
 sentence-transformers>=2.2.0
+requests>=2.25.0

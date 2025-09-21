@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 from src.ai.vision import VisualProcessor
-from src.ai.language import PromptParser
+from src.ai.gemma import GemmaWorkflowGenerator
 from src.core.engine import DesktopAutomationEngine
 
 def test_screenshot_capture():
@@ -41,26 +41,24 @@ def test_element_detection():
         print(f"✗ Element detection failed: {e}")
         return False
 
-def test_prompt_parsing():
-    """Test natural language prompt parsing"""
+def test_workflow_generation():
+    """Test Gemma workflow generation"""
     try:
-        parser = PromptParser()
+        generator = GemmaWorkflowGenerator()
         
         test_prompts = [
-            "Play cello music on Spotify",
-            "Open Chrome and search for Python tutorials",
-            "Send an email to john@example.com"
+            "Play music on Spotify",
+            "Open browser and search for Python"
         ]
         
         for prompt in test_prompts:
-            result = parser.parse(prompt)
-            assert 'target_app' in result, "Should extract target app"
-            assert 'main_action' in result, "Should extract main action"
-            print(f"✓ Parsed: {prompt} -> {result}")
+            workflow = generator.generate_workflow(prompt)
+            assert isinstance(workflow, list), "Should return workflow list"
+            print(f"✓ Generated workflow for: {prompt} ({len(workflow)} steps)")
         
         return True
     except Exception as e:
-        print(f"✗ Prompt parsing failed: {e}")
+        print(f"✗ Workflow generation failed: {e}")
         return False
 
 def test_automation_engine():
@@ -84,7 +82,7 @@ if __name__ == "__main__":
     tests = [
         test_screenshot_capture,
         test_element_detection,
-        test_prompt_parsing,
+        test_workflow_generation,
         test_automation_engine
     ]
     

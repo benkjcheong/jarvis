@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
 from src.core.engine import DesktopAutomationEngine
-from src.ai.language import PromptParser
-from src.workflows.library import WorkflowLibrary
 
 def main():
     """Main entry point for Jarvis desktop automation"""
-    engine = DesktopAutomationEngine()
-    parser = PromptParser()
-    
     print("Jarvis Desktop Automation System")
+    print("Uses Gemma model to generate workflows from natural language")
     print("Type 'quit' to exit")
+    
+    engine = DesktopAutomationEngine()
     
     while True:
         prompt = input("\nEnter command: ").strip()
@@ -22,19 +20,13 @@ def main():
             continue
         
         try:
-            # Parse the prompt
-            parsed = parser.parse(prompt)
-            print(f"Parsed: {parsed}")
+            # Generate and execute workflow using Gemma
+            success = engine.execute_prompt(prompt)
             
-            # Check for pre-defined workflows
-            workflow = WorkflowLibrary.get_workflow(prompt)
-            if workflow:
-                print(f"Found workflow with {len(workflow)} steps")
-                # In practice, would execute the workflow
-                # success = engine.execute_workflow(workflow)
-                print("Workflow execution simulated")
+            if success:
+                print("✓ Command executed successfully")
             else:
-                print("No matching workflow found")
+                print("✗ Command execution failed")
                 
         except Exception as e:
             print(f"Error: {e}")

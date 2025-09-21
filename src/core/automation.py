@@ -4,19 +4,26 @@ from typing import List, Optional
 from .types import UIElement, WorkflowStep, ActionType
 
 class LayoutAnalyzer:
+    def __init__(self):
+        from ..ai.vision import VisualProcessor
+        self.visual_processor = VisualProcessor()
+    
     def analyze(self, screenshot: np.ndarray) -> List[UIElement]:
-        # AI-powered layout understanding
-        containers = self._detect_containers(screenshot)
-        elements = self._classify_elements(containers, screenshot)
-        return elements
-    
-    def _detect_containers(self, screenshot: np.ndarray) -> List[dict]:
-        # Use computer vision to find UI containers
-        pass
-    
-    def _classify_elements(self, containers: List[dict], screenshot: np.ndarray) -> List[UIElement]:
-        # Classify each container as button, text field, etc.
-        pass
+        """Extract UI elements using OCR and CNN"""
+        raw_elements = self.visual_processor.extract_elements(screenshot)
+        
+        ui_elements = []
+        for elem in raw_elements:
+            ui_element = UIElement(
+                bounds=elem['bounds'],
+                element_type=elem.get('element_type', elem['type']),
+                text_content=elem.get('text', ''),
+                confidence=elem['confidence'],
+                semantic_tags=[]
+            )
+            ui_elements.append(ui_element)
+        
+        return ui_elements
 
 class ElementMatcher:
     def find_match(self, description: str, elements: List[UIElement]) -> Optional[UIElement]:
@@ -33,8 +40,15 @@ class ElementMatcher:
         return best_match if highest_score > 0.7 else None
     
     def _calculate_similarity(self, description: str, element: UIElement) -> float:
-        # Embedding-based similarity calculation
-        pass
+        """Calculate similarity between description and UI element"""
+        from ..ai.language import SemanticMatcher
+        
+        matcher = SemanticMatcher()
+        return matcher.calculate_similarity(
+            description, 
+            element.text_content, 
+            element.element_type
+        )
 
 class ActionExecutor:
     def execute_action(self, step: WorkflowStep, element: UIElement) -> bool:
@@ -51,13 +65,28 @@ class ActionExecutor:
         return False
     
     def _click(self, x: int, y: int) -> bool:
-        # Mouse click implementation
-        pass
+        """Execute mouse click"""
+        try:
+            import pyautogui
+            pyautogui.click(x, y)
+            return True
+        except Exception:
+            return False
     
     def _type_text(self, text: str) -> bool:
-        # Keyboard typing implementation
-        pass
+        """Type text using keyboard"""
+        try:
+            import pyautogui
+            pyautogui.typewrite(text)
+            return True
+        except Exception:
+            return False
     
     def _press_enter(self) -> bool:
-        # Enter key press implementation
-        pass
+        """Press enter key"""
+        try:
+            import pyautogui
+            pyautogui.press('enter')
+            return True
+        except Exception:
+            return False
