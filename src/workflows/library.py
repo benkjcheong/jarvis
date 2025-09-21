@@ -1,4 +1,4 @@
-from core_classes import WorkflowStep, ActionType
+from ..core.types import WorkflowStep, ActionType
 
 # Example workflows for common tasks
 

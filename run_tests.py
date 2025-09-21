@@ -6,7 +6,7 @@ import sys
 def run_unit_tests():
     """Run pytest unit tests"""
     print("Running unit tests...")
-    result = subprocess.run([sys.executable, "-m", "pytest", "test_system.py", "-v"], 
+    result = subprocess.run([sys.executable, "-m", "pytest", "tests/test_system.py", "-v"], 
                           capture_output=True, text=True)
     print(result.stdout)
     if result.stderr:
@@ -17,8 +17,8 @@ def run_integration_test():
     print("\nRunning integration test...")
     
     try:
-        from test_system import test_screenshot_capture, test_element_detection
-        from ai_models import PromptParser
+        from tests.test_system import test_screenshot_capture, test_element_detection
+        from src.ai.language import PromptParser
         
         # Test prompt parsing
         parser = PromptParser()
